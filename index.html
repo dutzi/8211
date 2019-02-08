@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>שטח מת - אפליקציית החמ"ל 8211</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
     <style>
       body {
         background-color: black;
@@ -32,12 +33,15 @@
   </head>
   <body>
     <div class="container">
-      <input id="searchInput" placeholder="הזן קו דיווח/שם חייל" />
+      <input id="searchInput" />
       <div id="output"/>
     </div>
     <script>
+      const encryptedData = 'U2FsdGVkX1+lZNcKNvDBF9//GhDyN7cy9ZZB3cE5t/KVJvxF6BwhWch88G3dZmVxen+1m9zmO+xWlh1sROGqBqQu6g+ngqj//JX4eewON4w/JL66lobdn7SF/8PBSfPQwreWc9QeGO6CoF0Y+srF45Z9AGWt6VYkuCCs+Ssq7mcjNeSc1fILj+ZijprOPsFnDKQ8Wn+g5zPuQVdmM75kfI7Zi/aV5iRuK/blGXbTKIz4F8e3dlXYLVrSZhMI1Dy4rVZn+gl6gCD1m8B++dTONpMHCXFyQr0PUWh7pVRp6Be+CxKqGZsGYewZ3ayODRoaHygn5eg/mLFjR9uDlEDG/30Mkik1X35C7p7cgkmlXjOGmDlxfqxMFKeTpwbgxs4aTmmrpt5X9PwsMUlZnRzoa5ubuj1sFsRKsTO1RacElDr5pEkybW9kzEr5CjgMImEHKExKjb8m2LYF4BiLo+CYaQiKT52kOz4JqZAXTIFgucJb2u7ErcvqNKFkRu5LB7Bhf3jGaEGFuB4yPxf7cuXeyyIdMrUsg0Jw0xhKvH/rFOSgcb7U0k8Nc0E/fKr8vtYpt7AFqlt2L2rYQ8/nIjZh22nGVLiXHHGFpvreUkkntJT1r2mgfl3D553aiXutoFlQte4Ruk7UB0mzWmngXbPA0VQWBtkND5c0A00q5U/FFXd+YYN3b+1BtLuD6vJJ6EgB4gtfUSiXxl3BNozMwBg+x3VfvtCC+PtzK8W6BfJBBJNcyfewCZWYiZohpa8d57R7G0gBGWuzt7HGY0S9DuymZg6nzj9cBpJfva48EVKVNIklqlSeaa6n3qEVvWihK8sR7gNL0fJyudlGX3R4owOFdEzSnccWk7rpiZBYePXxR+IWOVn6NOI4rAukwbrcclKyQpswR+pSxyvIVcbL8IbWyTV6fxfmJHDVT9N8eJoAYNnaugdfJHBlrepKbXoZw4z2b/hxXIR16tpfxgbzenXIZk0eZmmzpOFO3cQJgws5ASsOfxvhcMhIbQYn1myPnjr1UJ1WANHsOFrlIx4zey6UdQmDx7LfQprmeSJvIwPeBRKwOb2qH45EAgPwu7KFznXfg6Xcp8BqXHhUNV3M14e78ZFNPICjextj0wuchiWzK6G3mU7AB2XFLeGDAU0d+TtN6KuYL/UAn8ZVcFD8eSKhINUhw3aIr9+O/g7TK69QtFaHWU4mhaeoraJ0RQiFjJJldvuXdZSFxTtjW/Q89ebnetrYUjG0FTxVq7S0jeKke3IizTiJUjbJpEyAA7bcPBxSLCawk/klXmQtrajRmQm1GHF4f1rr33ht4/+F3v+wlBWuQLxUj2WS418/nStr+OivWEXOmIQs7CLM0EYK2RtwqABRa4lmKMvYxFYjPM7z7NV4Ob8h5NhZAkClDQVc0SgD1VoFWkh/XZZjMx7KPAgQxi4jBeDmD+2y6c/222sPgfL3yBhn5Dp90xvddNC5VAQBnI1PKyYw0Z6uZDyBA+1I1w=='
+      let decryptedData;
+
       function getFenceOwner(fencePoint) {
-        const result = data.fenceOwners.find(
+        const result = decryptedData.fenceOwners.find(
           fenceRegion =>
             fenceRegion.from <= fencePoint && fenceRegion.to >= fencePoint,
         );
@@ -49,7 +53,7 @@
       }
 
       function getRegionDetails(fencePoint) {
-        const result = data.fenceRegions.find(
+        const result = decryptedData.fenceRegions.find(
           fenceRegion =>
             fenceRegion.from <= fencePoint && fenceRegion.to >= fencePoint,
         );
@@ -61,7 +65,7 @@
         }
       }
 
-      const state = 'login';
+      let state = 'login';
 
       const searchInput = document.querySelector('#searchInput');
       const output = document.querySelector('#output');
@@ -69,8 +73,13 @@
       searchInput.addEventListener('keyup', (e) => {
         const value = searchInput.value;
         if (state === 'login') {
-          if (e.keyCode === 13) {
-            alert(1);
+          const data = CryptoJS.AES.decrypt(encryptedData, value);
+          try {
+            decryptedData = JSON.parse(data.toString(CryptoJS.enc.Utf8));
+            state = 'search';
+            render();
+          } catch (err) {
+            console.log(err)
           }
         } else {
           const fenceOwner = getFenceOwner(value);
@@ -91,8 +100,13 @@
       });
 
       function render() {
+        searchInput.value = '';
         if (state === 'login') {
           searchInput.placeholder = 'הזן סיסמא'
+          searchInput.setAttribute('type', 'password')
+        } else if (state === 'search') {
+          searchInput.placeholder = 'הזן קו דיווח/שם חייל'
+          searchInput.setAttribute('type', 'text')
         }
       }
 
