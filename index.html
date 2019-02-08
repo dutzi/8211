@@ -13,6 +13,7 @@
         font-family: helvetica;
         direction: rtl;
         font-size: 20px;
+        transition: all 0.5s ease-out;
       }
       .container {
         display: flex;
@@ -106,9 +107,11 @@
         if (state === 'login') {
           searchInput.placeholder = 'הזן סיסמא'
           searchInput.setAttribute('type', 'password')
+          document.body.style.backgroundColor = 'black';
         } else if (state === 'search') {
           searchInput.placeholder = 'הזן קו דיווח/שם חייל'
           searchInput.setAttribute('type', 'text')
+          document.body.style.backgroundColor = '#4caf50';
         }
       }
 
