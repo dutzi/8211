@@ -67,7 +67,7 @@ const schemaPositions = positions.reduce((prev, current, index) => {
 }, {});
 
 const schema = {
-  title: 'שבצ"ק 8211 - יום ראשון',
+  title: 'שבצ"ק 8211',
   description: 'שיבוץ חיילים במשימות לפלוגה המסייעת 8211',
   type: 'object',
   required: [],

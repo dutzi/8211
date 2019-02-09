@@ -1,26 +1,44 @@
 import React, { Component } from 'react';
 import { render } from 'react-dom';
+import schema from '../secrets/schema';
 
 import Form from 'react-jsonschema-form';
 
-const schema = {
-  title: 'Todo',
-  type: 'object',
-  required: ['title'],
-  properties: {
-    title: { type: 'string', title: 'Title', default: 'A new task' },
-    done: { type: 'boolean', title: 'Done?', default: false },
-  },
-};
+class MyForm extends React.PureComponent {
+  constructor() {
+    super();
 
-const log = type => console.log.bind(console, type);
+    const formData = JSON.parse(localStorage.getItem('data') || '{}');
+    this.state = { formData };
+  }
 
-render(
-  <Form
-    schema={schema}
-    onChange={log('changed')}
-    onSubmit={log('submitted')}
-    onError={log('errors')}
-  />,
-  document.getElementById('app'),
-);
+  handleChange(res) {
+    localStorage.setItem('data', JSON.stringify(res.formData));
+  }
+
+  handleSubmit(res) {
+    alert(res.formData);
+  }
+
+  handleReset() {
+    this.setState({ formData: {} });
+  }
+
+  render() {
+    const { formData } = this.state;
+
+    return (
+      <div>
+        <button onClick={this.handleReset.bind(this)}>איפוס</button>
+        <Form
+          schema={schema}
+          onChange={this.handleChange.bind(this)}
+          onSubmit={this.handleSubmit.bind(this)}
+          formData={formData}
+        />
+      </div>
+    );
+  }
+}
+
+render(<MyForm />, document.getElementById('app'));
