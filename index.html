@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>שטח מת - אפליקציית החמ"ל 8211</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
     <style>
       body {
         background-color: black;
@@ -12,9 +13,12 @@
         font-family: helvetica;
         direction: rtl;
         font-size: 20px;
+        transition: all 0.5s ease-out;
       }
       .container {
         display: flex;
+        max-width: 900px;
+        margin: auto;
         flex-direction: column;
       }
       input {
@@ -32,12 +36,15 @@
   </head>
   <body>
     <div class="container">
-      <input id="searchInput" placeholder="הזן קו דיווח/שם חייל" />
+      <input id="searchInput" />
       <div id="output"/>
     </div>
     <script>
+      const encryptedData = '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';
+      let decryptedData;
+
       function getFenceOwner(fencePoint) {
-        const result = data.fenceOwners.find(
+        const result = decryptedData.fenceOwners.find(
           fenceRegion =>
             fenceRegion.from <= fencePoint && fenceRegion.to >= fencePoint,
         );
@@ -49,7 +56,7 @@
       }
 
       function getRegionDetails(fencePoint) {
-        const result = data.fenceRegions.find(
+        const result = decryptedData.fenceRegions.find(
           fenceRegion =>
             fenceRegion.from <= fencePoint && fenceRegion.to >= fencePoint,
         );
@@ -61,7 +68,24 @@
         }
       }
 
-      const state = 'login';
+      function getTroubledRegion(fencePoint) {
+        const result = decryptedData.troubledRegions.find(
+          fenceRegion =>
+            fenceRegion.from <= fencePoint && fenceRegion.to >= fencePoint,
+        );
+
+        if (result) {
+          return result.type;
+        } else {
+          return 'שטח תקין';
+        }
+      }
+
+      function getSoldiers(name) {
+        return decryptedData.soldiers.filter(soldier => soldier.name.indexOf(name) !== -1)
+      }
+
+      let state = 'login';
 
       const searchInput = document.querySelector('#searchInput');
       const output = document.querySelector('#output');
@@ -69,30 +93,67 @@
       searchInput.addEventListener('keyup', (e) => {
         const value = searchInput.value;
         if (state === 'login') {
-          if (e.keyCode === 13) {
-            alert(1);
+          const data = CryptoJS.AES.decrypt(encryptedData, value);
+          try {
+            decryptedData = JSON.parse(data.toString(CryptoJS.enc.Utf8));
+            state = 'search';
+            render();
+          } catch (err) {
+            console.log(err)
           }
         } else {
-          const fenceOwner = getFenceOwner(value);
-          const regionDetails = getRegionDetails(value);
-          if (regionDetails === 'שטח מת') {
-            color = 'red'
+          if (isNaN(value)) {
+            const soldiers = getSoldiers(value)
+            console.log(soldiers);
+
+            output.innerHTML = `חיילים:
+            <br/>
+            ${soldiers.map(soldier => `<div>
+              <div>שם: <b>${soldier.name}</b></div>
+              <div>תפקיד: <b>${soldier.role}</b></div>
+              <div>מספר אישי: <b>${soldier.id}</b></div>
+              <div>טלפון: <b><a href="tel:${soldier.phone}">${soldier.phone}</a></b></div>
+              </div>`).join('<br/>')}
+            `
           } else {
-            color = 'inherit'
+            const fenceOwner = getFenceOwner(value);
+            const regionDetails = getRegionDetails(value);
+            const troubledRegion = getTroubledRegion(value);
+
+            if (regionDetails === 'שטח מת') {
+              regionDetailsColor = 'red'
+            } else {
+              regionDetailsColor = 'inherit'
+            }
+
+            if (troubledRegion === 'שטח בעייתי') {
+              troubledRegionColor = 'red'
+            } else {
+              troubledRegionColor = 'inherit'
+            }
+
+            output.innerHTML = `
+            קו דיווח ${value}:
+            <br/>
+            תצפית: <b>${fenceOwner}</b>
+            <br/>
+            מידע נוסף: <b style="background-color: ${regionDetailsColor}">${regionDetails}</b>,
+            <b style="background-color: ${troubledRegionColor}"> ${troubledRegion}</b>
+            `
           }
-          output.innerHTML = `
-          קו דיווח ${value}:
-          <br/>
-          תצפית: <b>${fenceOwner}</b>
-          <br/>
-          מידע נוסף: <b style="background-color: ${color}">${regionDetails}</b>
-          `
         }
       });
 
       function render() {
+        searchInput.value = '';
         if (state === 'login') {
           searchInput.placeholder = 'הזן סיסמא'
+          searchInput.setAttribute('type', 'password')
+          document.body.style.backgroundColor = 'black';
+        } else if (state === 'search') {
+          searchInput.placeholder = 'הזן קו דיווח/שם חייל'
+          searchInput.setAttribute('type', 'text')
+          document.body.style.backgroundColor = '#4caf50';
         }
       }
 
