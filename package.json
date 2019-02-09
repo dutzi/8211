@@ -4,7 +4,9 @@
   "description": "",
   "main": "data.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "generate-schema": "node ./scripts/generate-schema.js",
+    "build": "./node_modules/.bin/babel src --out-dir lib"
   },
   "repository": {
     "type": "git",
@@ -17,6 +19,19 @@
   },
   "homepage": "https://github.com/dutzi/8211#readme",
   "dependencies": {
-    "crypto-js": "^3.1.9-1"
+    "@babel/polyfill": "^7.2.5",
+    "crypto-js": "^3.1.9-1",
+    "lodash": "^4.17.11",
+    "react": "^16.8.1",
+    "react-dom": "^16.8.1",
+    "react-jsonschema-form": "^1.2.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/preset-react": "^7.0.0",
+    "webpack": "^4.29.3",
+    "webpack-cli": "^3.2.3"
   }
 }
