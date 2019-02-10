@@ -96,6 +96,7 @@
 
       const searchInput = document.querySelector('#searchInput');
       const output = document.querySelector('#output');
+      const version = document.querySelector('.version');
 
       function copy(e) {
         e.preventDefault();
@@ -178,10 +179,12 @@
           searchInput.placeholder = 'הזן סיסמא';
           searchInput.setAttribute('type', 'password');
           document.body.style.backgroundColor = 'black';
+          version.style.opacity = '1';
         } else if (state === 'search') {
           searchInput.placeholder = 'הזן קו דיווח/שם חייל';
           searchInput.setAttribute('type', 'text');
           document.body.style.backgroundColor = '#4caf50';
+          version.style.opacity = '0';
         }
       }
 
