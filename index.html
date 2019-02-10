@@ -82,7 +82,7 @@
       }
 
       function getSoldiers(str) {
-        const regEx = new RegExp(str.replace(/ /g, '.*'))
+        const regEx = new RegExp(str.replace(/ /g, '.*').replace(/\+/g, ' '))
         return decryptedData.soldiers.filter(soldier => soldier.match(regEx))
       }
 
