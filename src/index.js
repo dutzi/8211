@@ -14,29 +14,42 @@ class MyForm extends React.PureComponent {
 
   componentDidMount() {
     setInterval(() => {
-      this.forceUpdate();
+      // this.forceUpdate();
     }, 1000);
   }
 
   handleChange(res) {
     localStorage.setItem('data', JSON.stringify(res.formData));
+    this.setState({
+      formData: res.formData,
+    });
   }
 
   handleSubmit(res) {
     alert(res.formData);
   }
 
-  handleReset() {
-    this.setState({ formData: {} });
-  }
+  // handleReset() {
+  //   this.setState({ formData: {} });
+  // }
 
   isNow(details) {
     const fromTo = details.title
       .split(' ')
       .pop()
       .split('-');
-    const hours = new Date().getHours();
-    return fromTo[0] === 'משמרת' || (fromTo[0] <= hours && fromTo[1] > hours);
+    let hours = new Date().getHours();
+    const isEndless = fromTo[0] === 'משמרת';
+    fromTo[0] = Number(fromTo[0]);
+    fromTo[1] = Number(fromTo[1]);
+    if (hours < 12) {
+      hours += 24;
+    }
+    if (fromTo[1] < fromTo[0]) {
+      fromTo[1] = fromTo[1] + 24;
+    }
+    console.log(hours, fromTo[0], fromTo[1]);
+    return isEndless || (fromTo[0] <= hours && fromTo[1] > hours);
   }
 
   render() {
