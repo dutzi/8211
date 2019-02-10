@@ -11,7 +11,7 @@ function getFrom(position, index) {
     return position.from;
   }
 
-  return position.from + index * (24 / position.numOccurrences);
+  return (position.from + index * (24 / position.numOccurrences)) % 24;
 }
 
 function getTo(position, index) {
@@ -19,7 +19,7 @@ function getTo(position, index) {
     return position.to || 'סוף משמרת';
   }
 
-  return position.from + (index + 1) * (24 / position.numOccurrences);
+  return (position.from + (index + 1) * (24 / position.numOccurrences)) % 24;
 }
 
 function getPositionSoldierProperties(position) {

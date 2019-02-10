@@ -26,17 +26,53 @@ class MyForm extends React.PureComponent {
 
   render() {
     const { formData } = this.state;
-
+    console.log(formData);
+    console.log(schema);
+    const positions = Object.keys(schema.properties);
     return (
-      <div>
-        <button onClick={this.handleReset.bind(this)}>איפוס</button>
-        <Form
-          schema={schema}
-          onChange={this.handleChange.bind(this)}
-          onSubmit={this.handleSubmit.bind(this)}
-          formData={formData}
-        />
-      </div>
+      <React.Fragment>
+        <div className="form">
+          {/* <button onClick={this.handleReset.bind(this)}>איפוס</button> */}
+          <Form
+            schema={schema}
+            onChange={this.handleChange.bind(this)}
+            onSubmit={this.handleSubmit.bind(this)}
+            formData={formData}
+          />
+        </div>
+        {/* <div className="table">
+          {positions.map((position, index) => {
+            const positionSchema = schema.properties[position];
+            return (
+              <div className="table-row" key={index}>
+                <div className="title">{positionSchema.title}</div>
+                <table className="inner-table">
+                  <tr>
+                    {Object.keys(positionSchema.properties).map(position2 => {
+                      const positionSchema2 =
+                        positionSchema.properties[position2];
+                      return <td>{positionSchema2.title}</td>;
+                    })}
+                  </tr>
+                  {Object.keys(positionSchema.properties).map(position3 => {
+                    const positionSchema2 =
+                      positionSchema.properties[position3];
+                    return (
+                      <td>
+                        {Object.keys(positionSchema2.properties).map(
+                          soldier => (
+                            <tr>{formData[position][position3][soldier]}</tr>
+                          ),
+                        )}
+                      </td>
+                    );
+                  })}
+                </table>
+              </div>
+            );
+          })}
+        </div> */}
+      </React.Fragment>
     );
   }
 }
