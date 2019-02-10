@@ -91,9 +91,15 @@
       const searchInput = document.querySelector('#searchInput');
       const output = document.querySelector('#output');
 
+      function copy(e) {
+        e.preventDefault();
+        const phoneEl = e.currentTarget.parentElement.children[0];
+        navigator.clipboard.writeText(phoneEl.innerText)
+      }
+
       const renderLine = (column, index, content) => {
         if (index === 9 || index === 10) {
-          return `<div>${column}: <a href="tel:${content}"><b>${content}</b></a></div>`
+          return `<div>${column}: <a href="tel:${content}"><b>${content}</b></a> <a href="#" onclick="copy(event)">(העתק)</a></div>`
         } else if (index === 11) {
           return `<div>${column}: <a href="mailto:${content}"><b>${content}</b></a></div>`
         } else {
