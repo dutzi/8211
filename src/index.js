@@ -12,6 +12,12 @@ class MyForm extends React.PureComponent {
     this.state = { formData };
   }
 
+  componentDidMount() {
+    setInterval(() => {
+      this.forceUpdate();
+    }, 1000);
+  }
+
   handleChange(res) {
     localStorage.setItem('data', JSON.stringify(res.formData));
   }
@@ -24,11 +30,20 @@ class MyForm extends React.PureComponent {
     this.setState({ formData: {} });
   }
 
+  isNow(details) {
+    const fromTo = details.title
+      .split(' ')
+      .pop()
+      .split('-');
+    const hours = new Date().getHours();
+    return fromTo[0] === 'משמרת' || (fromTo[0] <= hours && fromTo[1] > hours);
+  }
+
   render() {
     const { formData } = this.state;
-    console.log(formData);
-    console.log(schema);
+
     const positions = Object.keys(schema.properties);
+
     return (
       <React.Fragment>
         <div className="form">
@@ -40,7 +55,7 @@ class MyForm extends React.PureComponent {
             formData={formData}
           />
         </div>
-        {/* <div className="table">
+        <div className="table">
           {positions.map((position, index) => {
             const positionSchema = schema.properties[position];
             return (
@@ -51,14 +66,30 @@ class MyForm extends React.PureComponent {
                     {Object.keys(positionSchema.properties).map(position2 => {
                       const positionSchema2 =
                         positionSchema.properties[position2];
-                      return <td>{positionSchema2.title}</td>;
+                      return (
+                        <td
+                          className={
+                            this.isNow(positionSchema.properties[position2])
+                              ? 'selected-td'
+                              : ''
+                          }
+                        >
+                          {positionSchema2.title}
+                        </td>
+                      );
                     })}
                   </tr>
                   {Object.keys(positionSchema.properties).map(position3 => {
                     const positionSchema2 =
                       positionSchema.properties[position3];
                     return (
-                      <td>
+                      <td
+                        className={
+                          this.isNow(positionSchema.properties[position3])
+                            ? 'selected-td'
+                            : ''
+                        }
+                      >
                         {Object.keys(positionSchema2.properties).map(
                           soldier => (
                             <tr>{formData[position][position3][soldier]}</tr>
@@ -71,7 +102,7 @@ class MyForm extends React.PureComponent {
               </div>
             );
           })}
-        </div> */}
+        </div>
       </React.Fragment>
     );
   }
