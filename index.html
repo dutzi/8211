@@ -42,7 +42,7 @@
     <div class="container">
       <input id="searchInput" />
       <div id="output"></div>
-      <div class="version">v1.0.0</div>
+      <div class="version">v1.0.1</div>
     </div>
     <script>
       const encryptedData =
@@ -180,6 +180,7 @@
           searchInput.setAttribute('type', 'password');
           document.body.style.backgroundColor = 'black';
           version.style.opacity = '1';
+          searchInput.focus();
         } else if (state === 'search') {
           searchInput.placeholder = 'הזן קו דיווח/שם חייל';
           searchInput.setAttribute('type', 'text');
