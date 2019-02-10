@@ -42,7 +42,7 @@
     <div class="container">
       <input id="searchInput" />
       <div id="output"></div>
-      <div class="version">v1.1.0</div>
+      <div class="version">v1.1.1</div>
     </div>
     <script>
       const encryptedData =
@@ -119,6 +119,8 @@
         textArea.style.border = 'none';
         textArea.style.outline = 'none';
         textArea.style.boxShadow = 'none';
+
+        textArea.style.fontSize = '16px';
 
         // Avoid flash of white box if rendered for any reason.
         textArea.style.background = 'transparent';
