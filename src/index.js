@@ -17,7 +17,7 @@ class MyForm extends React.PureComponent {
 
   componentDidMount() {
     setInterval(() => {
-      // this.forceUpdate();
+      this.forceUpdate();
     }, 1000);
     setTimeout(() => {
       this.setState({
