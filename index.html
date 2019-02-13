@@ -36,13 +36,26 @@
         text-align: center;
         color: #555;
       }
+      #logo {
+        width: 30px;
+        position: absolute;
+        left: 9px;
+        top: 7px;
+      }
+      .input-wrapper {
+        position: relative;
+        display: flex;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <input id="searchInput" />
+      <div class="input-wrapper">
+        <input id="searchInput" />
+        <img id="logo" src="8211.png" />
+      </div>
       <div id="output"></div>
-      <div class="version">v1.2.1</div>
+      <div class="version">v1.2.2</div>
     </div>
     <script>
       const encryptedData =
