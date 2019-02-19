@@ -86,17 +86,46 @@
     <style>
       body {
         background-color: black;
-        color: white;
+        color: black;
         font-family: helvetica;
         direction: rtl;
         font-size: 20px;
+        padding: 10px;
         transition: all 0.5s ease-out;
+        font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue',
+          'Helvetica', 'Arial', sans-serif;
       }
       .container {
         display: flex;
         max-width: 900px;
         margin: auto;
         flex-direction: column;
+      }
+      .soldier {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0px 10px 50px #00000059;
+        padding: 20px 20px 10px;
+      }
+      .soldier .name {
+        font-size: 1.5em;
+        line-height: 1.7em;
+        font-weight: bold;
+      }
+      .soldier .line {
+        border-top: 1px solid #e4e4e4;
+        margin: 0px -20px;
+        padding: 0px 20px;
+      }
+      a {
+        color: #3f51b5;
+        text-decoration: none;
+      }
+      .soldier .copy {
+        text-decoration: none;
+      }
+      .soldier .line-data {
+        /* color: #e91e66; */
       }
       input {
         padding: 10px;
@@ -123,10 +152,19 @@
         position: relative;
         display: flex;
       }
-      #output > div {
-        background: rgba(0, 0, 0, 0.3);
-        padding: 10px;
-        border-radius: 10px;
+      .force {
+        background: white;
+        border-radius: 5px;
+        padding: 0px 10px;
+        border: 1px solid #e7e7e7;
+      }
+      .force-line {
+        border-bottom: 1px solid #e7e7e7;
+        margin: 0px -10px;
+        padding: 0px 10px;
+      }
+      .force-line:last-child {
+        border-bottom: none;
       }
     </style>
   </head>
@@ -137,7 +175,7 @@
         <img id="logo" src="8211.png" />
       </div>
       <div id="output"></div>
-      <div class="version">v1.2.5</div>
+      <div class="version">v1.2.6</div>
     </div>
     <script>
       const encryptedData =
@@ -243,18 +281,23 @@
       }
 
       const renderLine = (column, index, content) => {
-        if (index === 9 || index === 10) {
-          return `<div>${column}: <a href="tel:${content}"><b>${content}</b></a> <a href="#" onclick="copy(event)">(העתק)</a></div>`;
+        if (index === 1 || index === 2) {
+          return '';
+        } else if (index === 9 || index === 10) {
+          return `<div class="line">${column}: <a href="tel:${content}"><b>${content}</b></a> <a class="copy" href="#" onclick="copy(event)">&#128203;</a></div>`;
         } else if (index === 11) {
-          return `<div>${column}: <a href="mailto:${content}"><b>${content}</b></a></div>`;
+          return `<div class="line">דוא"ל: <a href="mailto:${content}"><b>${content}</b></a> <a class="copy" href="#" onclick="copy(event)">&#128203;</a></div>`;
         } else {
-          return `<div>${column}: <b>${content}</b></div>`;
+          return `<div class="line">${column}: <b class="line-data">${content}</b></div>`;
         }
       };
 
       const renderSoldier = (soldier, columns) => {
         soldier = soldier.split(',');
-        return `<div>
+        return `<div class="soldier">
+          <div class="name">
+            ${soldier[1] + ' ' + soldier[2]}
+          </div>
           ${columns
             .map((column, index) => renderLine(column, index, soldier[index]))
             .join('')}
@@ -263,16 +306,16 @@
 
       const renderForceLine = forceLine => {
         if (!isNaN(forceLine)) {
-          return `<a href="tel:${forceLine}"><b>${forceLine}</b></a>`;
+          return `<div class="force-line"><a href="tel:${forceLine}"><b>${forceLine}</b></a></div>`;
         } else {
-          return forceLine;
+          return `<div class="force-line">${forceLine}</div>`;
         }
       };
 
       const renderForce = force => {
         force = force.split(',');
-        return `<div>
-          ${force.map(renderForceLine).join('<br/>')}
+        return `<div class="force">
+          ${force.map(renderForceLine).join('')}
         </div>`;
       };
 
@@ -292,15 +335,13 @@
             const soldiers = getSoldiers(value);
             const forces = getForces(value);
             const columns = decryptedData.soldiers[0].split(',');
-            output.innerHTML = `חיילים:
-            <br/>
+            output.innerHTML = `<h1>חיילים</h1>
             ${soldiers
               .map(soldier => renderSoldier(soldier, columns))
               .join('<br/>')}
             `;
 
-            output.innerHTML += `כוחות נוספים:
-            <br/>
+            output.innerHTML += `<h1>כוחות נוספים</h1>
             ${forces.map(force => renderForce(force)).join('<br/>')}
             `;
           } else {
@@ -343,7 +384,7 @@
         } else if (state === 'search') {
           searchInput.placeholder = 'הזן קו דיווח/שם חייל/תפקיד';
           searchInput.setAttribute('type', 'text');
-          document.body.style.backgroundColor = '#4caf50';
+          document.body.style.backgroundColor = '#f1f1f1';
           version.style.opacity = '0';
         }
       }
