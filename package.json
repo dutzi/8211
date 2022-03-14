@@ -1,0 +1,11 @@
+{
+  "name": "8211",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:dutzi/8211.git",
+  "author": "Eldad Bercovici <eldad@deepdub.ai>",
+  "scripts": {
+    "build": "echo todo"
+  },
+  "license": "MIT"
+}
