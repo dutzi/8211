@@ -7,5 +7,11 @@
   "scripts": {
     "build": "echo todo"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "crypto-js": "^4.1.1",
+    "dotenv": "^16.0.0",
+    "papaparse": "^5.3.1"
+  }
 }
