@@ -6,6 +6,7 @@
     <title>שטח מת - אפליקציית החמ"ל 8211</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/blueimp-md5/2.16.0/js/md5.min.js"></script>
     <link
       rel="apple-touch-icon"
       sizes="57x57"
@@ -107,6 +108,11 @@
         box-shadow: 0px 10px 50px #00000059;
         padding: 20px 20px 10px;
       }
+      .soldier .topRow {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
       .soldier .name {
         font-size: 1.5em;
         line-height: 1.7em;
@@ -123,9 +129,6 @@
       }
       .soldier .copy {
         text-decoration: none;
-      }
-      .soldier .line-data {
-        /* color: #e91e66; */
       }
       input {
         padding: 10px;
@@ -166,15 +169,30 @@
       .force-line:last-child {
         border-bottom: none;
       }
+      .favItemButton {
+        font-size: 1.5rem;
+        padding: 0.5rem 1rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+      .btnClear {
+        width: 30px;
+        position: absolute;
+        left: 50px;
+        height: 30px;
+        top: 7px;
+      }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="input-wrapper">
-        <input id="searchInput" />
+        <input id="searchInput" autocomplete="off" />
+        <button class="btnClear" onclick="handleClearQuery()">X</button>
         <img id="logo" src="8211.png" />
       </div>
       <div id="output"></div>
+      <div id="favorites"></div>
       <div class="version">v1.2.7</div>
     </div>
     <script src="/data.js"></script>
@@ -182,6 +200,7 @@
     <script>
       const encryptedData = window.encryptedData;
       let decryptedData;
+      let decryptedDataMap;
 
       function getFenceOwner(fencePoint) {
         const result = decryptedData.fenceOwners.find(
@@ -194,6 +213,11 @@
           return 'מחוץ לגבולות';
         }
       }
+
+      window.handleClearQuery = function () {
+        searchInput.value = '';
+        handleQueryChange();
+      };
 
       function getRegionDetails(fencePoint) {
         const result = decryptedData.fenceRegions.find(
@@ -234,7 +258,6 @@
               soldier.mainPhone && soldier.mainPhone.startsWith('00')
                 ? soldier.mainPhone.slice(1)
                 : soldier.mainPhone,
-            key: `${soldier.firstName} ${soldier.lastName} ${soldier.mobile} ${soldier.id} ${soldier.idfId}`,
           };
         });
 
@@ -250,6 +273,7 @@
 
       const searchInput = document.querySelector('#searchInput');
       const output = document.querySelector('#output');
+      const favoritesEl = document.querySelector('#favorites');
       const version = document.querySelector('.version');
 
       function copy(e) {
@@ -308,15 +332,47 @@
         }
       };
 
-      const renderSoldier = (soldier, columns) => {
+      const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+
+      function isInFavorites(key) {
+        const hashedKey = md5(key);
+
+        return favorites.indexOf(hashedKey) !== -1;
+      }
+
+      window.handleToggleFavorite = function (key) {
+        const hashedKey = md5(key);
+
+        if (isInFavorites(key)) {
+          const index = favorites.indexOf(hashedKey);
+          favorites.splice(index, 1);
+        } else {
+          favorites.push(md5(key));
+        }
+
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+
+        render();
+        handleQueryChange();
+      };
+
+      const renderSoldier = (item, columns) => {
+        const favButtonLabel = isInFavorites(item.key)
+          ? 'הסר מהמועדפים'
+          : 'הוסף למועדפים';
         return `<div class="soldier">
-          <div class="name">
-            ${soldier.firstName + ' ' + soldier.lastName}
+          <div class="topRow">
+            <div class="name">
+              ${item.firstName + ' ' + item.lastName}
+            </div>
+            <div class="actions">
+              <button onClick="handleToggleFavorite('${
+                item.key
+              }')">${favButtonLabel}</button>
+            </div>
           </div>
           ${columns
-            .map((column, index) =>
-              renderLine(column, index, soldier[column[1]])
-            )
+            .map((column, index) => renderLine(column, index, item[column[1]]))
             .join('')}
         </div>`;
       };
@@ -336,64 +392,78 @@
         </div>`;
       };
 
-      searchInput.addEventListener('keyup', (e) => {
+      function handleQueryChange() {
         const value = searchInput.value;
 
         if (state === 'login') {
-          const data = CryptoJS.AES.decrypt(encryptedData, value);
+          password = value;
+          const data = CryptoJS.AES.decrypt(encryptedData, password);
           try {
             decryptedData = JSON.parse(data.toString(CryptoJS.enc.Utf8));
+            decryptedData = decryptedData.map((soldier) => ({
+              ...soldier,
+              key: `${soldier.firstName} ${soldier.lastName}|${soldier.mobile}|${soldier.id}|${soldier.idfId}`,
+            }));
+            decryptedDataMap = decryptedData.reduce(
+              (p, c) => ({
+                ...p,
+                [md5(c.key)]: c,
+              }),
+              {}
+            );
+
             state = 'search';
             render();
           } catch (err) {
             // console.log(err);
           }
         } else {
-          if (isNaN(value)) {
-            const soldiers = getIndexedSoldiers();
-            // const forces = getForces(value);
-            const forces = [];
-            // const columns = decryptedData.soldiers[0].split(',');
+          const soldiers =
+            value === ''
+              ? []
+              : getIndexedSoldiers().filter(
+                  (soldier) => soldier.key.indexOf(value) !== -1
+                );
+
+          const forces = [];
+
+          if (soldiers.length === 0) {
+            if (value === '') {
+              output.innerHTML = '';
+            } else {
+              output.innerHTML = `
+              <h1>חיילים</h1>
+              <div><strong>לא נמצאו חיילים</strong></div>
+              `;
+            }
+          } else {
             output.innerHTML = `<h1>חיילים</h1>
-            ${soldiers
-              .filter((soldier) => soldier.key.indexOf(value) !== -1)
-              .map((soldier) => renderSoldier(soldier, window.keyMapping))
-              .join('<br/>')}
-            `;
-
-            // output.innerHTML += `<h1>כוחות נוספים</h1>
-            // ${forces.map((force) => renderForce(force)).join('<br/>')}
-            // } else {
-            //   const fenceOwner = getFenceOwner(value);
-            //   const regionDetails = getRegionDetails(value);
-            //   const troubledRegion = getTroubledRegion(value);
-
-            //   if (regionDetails === 'שטח מת') {
-            //     regionDetailsColor = 'red';
-            //   } else {
-            //     regionDetailsColor = 'inherit';
-            //   }
-
-            //   if (troubledRegion === 'שטח בעייתי') {
-            //     troubledRegionColor = 'red';
-            //   } else {
-            //     troubledRegionColor = 'inherit';
-            //   }
-
-            //   output.innerHTML = `
-            //   קו דיווח ${value}:
-            //   <br/>
-            //   תצפית: <b>${fenceOwner}</b>
-            //   <br/>
-            //   מידע נוסף: <b style="background-color: ${regionDetailsColor}">${regionDetails}</b>,
-            //   <b style="background-color: ${troubledRegionColor}"> ${troubledRegion}</b>
-            //   `;
+              ${soldiers
+                .map((soldier, index) =>
+                  renderSoldier(soldier, window.keyMapping)
+                )
+                .join('<br/>')}
+              `;
           }
         }
-      });
+      }
+
+      searchInput.addEventListener('keyup', handleQueryChange);
+
+      function handleFavoriteClick(key) {
+        const soldier = decryptedDataMap[key];
+        searchInput.value = soldier.firstName + ' ' + soldier.lastName;
+        handleQueryChange();
+      }
+
+      let prevState;
 
       function render() {
-        searchInput.value = '';
+        if (prevState !== state) {
+          searchInput.value = '';
+          prevState = state;
+        }
+
         if (state === 'login') {
           searchInput.placeholder = 'הזן סיסמא';
           searchInput.setAttribute('type', 'password');
@@ -405,6 +475,21 @@
           searchInput.setAttribute('type', 'text');
           document.body.style.backgroundColor = '#8BC34A';
           version.style.opacity = '0';
+
+          if (favorites.length) {
+            favoritesEl.innerHTML = `<h1>מועדפים</h1>`;
+            favoritesEl.innerHTML += favorites
+              .map((key) => {
+                const soldier = decryptedDataMap[key];
+                if (!soldier) {
+                  return '';
+                }
+                return `<button class="favItemButton" onClick="handleFavoriteClick('${key}')">${soldier.firstName} ${soldier.lastName}</button>`;
+              })
+              .join('');
+          } else {
+            favoritesEl.innerHTML = '';
+          }
         }
       }
 

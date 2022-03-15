@@ -5,6 +5,7 @@
   "repository": "git@github.com:dutzi/8211.git",
   "author": "Eldad Bercovici <eldad@deepdub.ai>",
   "scripts": {
+    "start": "serve",
     "build": "echo todo"
   },
   "license": "MIT",
@@ -12,6 +13,7 @@
   "devDependencies": {
     "crypto-js": "^4.1.1",
     "dotenv": "^16.0.0",
-    "papaparse": "^5.3.1"
+    "papaparse": "^5.3.1",
+    "serve": "^13.0.2"
   }
 }
