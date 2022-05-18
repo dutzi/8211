@@ -8,21 +8,46 @@ const CryptoJS = require('crypto-js');
 
 dotenv.config();
 
-const data = parseResult.data.map((row) => {
-  const mappedRow = {};
-  keyMapping.forEach(([he, en], index) => {
-    if (index === 0) {
-      mappedRow[en] = row[Object.keys(row)[0]];
+const adminData = parseResult.data
+  .map((row) => {
+    const mappedRow = {};
+    keyMapping.forEach(([he, en], index) => {
+      if (index === 0) {
+        mappedRow[en] = row[Object.keys(row)[0]];
+      }
+      mappedRow[en] = row[he];
+    });
+
+    if (!mappedRow['firstName'] && !mappedRow['lastName']) {
+      return null;
     }
-    mappedRow[en] = row[he];
-  });
-  return mappedRow;
-});
+
+    return mappedRow;
+  })
+  .filter(Boolean);
+
+const userData = adminData.map((item) => ({
+  firstName: item.firstName,
+  lastName: item.lastName,
+  mobile: item.mobile,
+  mainPhone: item.mainPhone,
+}));
+
+console.log(adminData.length);
+console.log(userData.length);
 
 fs.writeFileSync(
-  './data.js',
-  `window.encryptedData = '${CryptoJS.AES.encrypt(
-    JSON.stringify(data, 2),
-    process.env.PASSWORD
+  './admin-data.js',
+  `window.adminEncryptedData = '${CryptoJS.AES.encrypt(
+    JSON.stringify(adminData, 2),
+    process.env.PASSWORD_ADMIN
+  ).toString()}'`
+);
+
+fs.writeFileSync(
+  './user-data.js',
+  `window.userEncryptedData = '${CryptoJS.AES.encrypt(
+    JSON.stringify(userData, 2),
+    process.env.PASSWORD_USER
   ).toString()}'`
 );

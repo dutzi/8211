@@ -195,10 +195,12 @@
       <div id="favorites"></div>
       <div class="version">v1.2.7</div>
     </div>
-    <script src="/data.js"></script>
+    <script src="/admin-data.js"></script>
+    <script src="/user-data.js"></script>
     <script src="/key-mapping.js"></script>
     <script>
-      const encryptedData = window.encryptedData;
+      const adminEncryptedData = window.adminEncryptedData;
+      const userEncryptedData = window.userEncryptedData;
       let decryptedData;
       let decryptedDataMap;
 
@@ -321,6 +323,10 @@
       }
 
       const renderLine = (column, index, content) => {
+        if (!content) {
+          return '';
+        }
+
         if (index === 1 || index === 2) {
           return '';
         } else if (['mobile', 'mainPhone'].includes(column[1])) {
@@ -397,25 +403,28 @@
 
         if (state === 'login') {
           password = value;
-          const data = CryptoJS.AES.decrypt(encryptedData, password);
-          try {
-            decryptedData = JSON.parse(data.toString(CryptoJS.enc.Utf8));
-            decryptedData = decryptedData.map((soldier) => ({
-              ...soldier,
-              key: `${soldier.firstName} ${soldier.lastName}|${soldier.mobile}|${soldier.id}|${soldier.idfId}`,
-            }));
-            decryptedDataMap = decryptedData.reduce(
-              (p, c) => ({
-                ...p,
-                [md5(c.key)]: c,
-              }),
-              {}
-            );
+          for (const group of [adminEncryptedData, userEncryptedData]) {
+            const data = CryptoJS.AES.decrypt(group, password);
+            try {
+              decryptedData = JSON.parse(data.toString(CryptoJS.enc.Utf8));
+              decryptedData = decryptedData.map((soldier) => ({
+                ...soldier,
+                key: `${soldier.firstName} ${soldier.lastName}|${soldier.mobile}|${soldier.id}|${soldier.idfId}`,
+              }));
+              decryptedDataMap = decryptedData.reduce(
+                (p, c) => ({
+                  ...p,
+                  [md5(c.key)]: c,
+                }),
+                {}
+              );
 
-            state = 'search';
-            render();
-          } catch (err) {
-            // console.log(err);
+              state = 'search';
+              render();
+              break;
+            } catch (err) {
+              // console.log(err);
+            }
           }
         } else {
           const soldiers =
