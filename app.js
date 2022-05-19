@@ -37,11 +37,9 @@ function arrayBufferToString(buffer) {
 }
 
 document.querySelector('#bioSignup').addEventListener('click', async (e) => {
-  console.log(password);
-  console.log(stringToArrayBuffer(password));
   const publicKeyCredential = await window.navigator.credentials.create({
     publicKey: {
-      rp: { name: 'example.com' },
+      rp: { name: '8211.info' },
       user: {
         name: 'john.appleseed@example.com',
         id: stringToArrayBuffer(password),
@@ -52,7 +50,6 @@ document.querySelector('#bioSignup').addEventListener('click', async (e) => {
       authenticatorSelection: { authenticatorAttachment: 'platform' },
     },
   });
-  console.log(publicKeyCredential);
   const userHandle = arrayBufferToString(publicKeyCredential.rawId);
   localStorage.setItem(BIO_SIGNUP_LS_KEY, userHandle);
   isBioSignedUp = true;
@@ -339,7 +336,7 @@ function handleQueryChange() {
         handleQueryChange();
         break;
       } catch (err) {
-        // console.log(err);
+        console.log(err);
       }
     }
   } else {
