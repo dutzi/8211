@@ -202,7 +202,7 @@ a {
 
 .rows {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 140px 1fr;
   /* gap: 0 1.5rem; */
 }
 
@@ -216,6 +216,7 @@ a {
   padding-left: 1.5rem;
   font-weight: bold;
   border-bottom: 1px solid #bbb;
+  word-break: break-word;
 }
 
 .preSigninMain {

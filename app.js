@@ -231,7 +231,7 @@ const renderLine = (column, index, content) => {
   } else if (column[1] === 'email') {
     return (
       `<div class="label">דוא"ל</div>` +
-      `<div class="value"><a href="mailto:${content}"><b>${content}</b></a> <a class="copy" href="#" onclick="copy(event)">&#128203;</a></div>`
+      `<div class="value"><a href="mailto:${content}"><b>${content}</b></a> <a class="copy" href="#" onclick="copy(event)"><img src="/copy.svg"/></a></div>`
     );
   } else {
     return (
