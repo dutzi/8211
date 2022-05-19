@@ -6,6 +6,7 @@ const userEncryptedData = window.userEncryptedData;
 
 let password = '';
 let isApproved = false;
+let userGroupType = null;
 
 if (window.location.search.indexOf('bio=1') !== -1) {
   alert('המידע נמחק');
@@ -21,19 +22,19 @@ let isBioSignedIn = false;
 let isBioDismissed = localStorage.getItem('isBioDismissed') === 'true';
 
 function stringToArrayBuffer(str) {
-  let buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-  let bufView = new Uint16Array(buf);
+  let buf = new ArrayBuffer(str.length); // 2 bytes for each char
+  let bufView = new Uint8Array(buf);
   for (let i = 0, strLen = str.length; i < strLen; i++) {
     bufView[i] = str.charCodeAt(i);
   }
   return buf;
 }
 
-// Here Uint16 can be different like Uinit8/Uint32 depending upon your
+// Here Uint8 can be different like Uinit8/Uint32 depending upon your
 // buffer value type.
 //
 function arrayBufferToString(buffer) {
-  return String.fromCharCode.apply(null, new Uint16Array(buffer));
+  return String.fromCharCode.apply(null, new Uint8Array(buffer));
 }
 
 document.querySelector('#bioSignup').addEventListener('click', async (e) => {
@@ -41,9 +42,9 @@ document.querySelector('#bioSignup').addEventListener('click', async (e) => {
     publicKey: {
       rp: { name: '8211.info' },
       user: {
-        name: 'john.appleseed@example.com',
+        name: `${userGroupType}@example.com`,
         id: stringToArrayBuffer(password),
-        displayName: 'John Appleseed',
+        displayName: `8211 ${userGroupType}`,
       },
       pubKeyCredParams: [{ type: 'public-key', alg: -7 }],
       challenge: stringToArrayBuffer(CHALLENGE_STRING),
@@ -314,8 +315,11 @@ function handleQueryChange() {
 
   if (state === 'login') {
     password = value;
-    for (const group of [adminEncryptedData, userEncryptedData]) {
-      const data = CryptoJS.AES.decrypt(group, password);
+    for (const group of [
+      { type: 'admin', data: adminEncryptedData },
+      { type: 'user', data: userEncryptedData },
+    ]) {
+      const data = CryptoJS.AES.decrypt(group.data, password);
       try {
         decryptedData = JSON.parse(data.toString(CryptoJS.enc.Utf8));
         decryptedData = decryptedData.map((soldier) => ({
@@ -332,11 +336,12 @@ function handleQueryChange() {
 
         state = 'search';
         searchInput.value = '';
+        userGroupType = group.type;
         render();
         handleQueryChange();
         break;
       } catch (err) {
-        console.log(err);
+        // console.log(err);
       }
     }
   } else {
