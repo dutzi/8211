@@ -104,7 +104,7 @@ window.handleClearQuery = function () {
 };
 
 window.handleInputClick = function (event) {
-  if (event.offsetX < 40) {
+  if (event.offsetX < 75) {
     handleClearQuery();
   }
 };
