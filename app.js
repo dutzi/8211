@@ -103,6 +103,12 @@ window.handleClearQuery = function () {
   handleQueryChange();
 };
 
+window.handleInputClick = function (event) {
+  if (event.offsetX < 40) {
+    handleClearQuery();
+  }
+};
+
 function getRegionDetails(fencePoint) {
   const result = decryptedData.fenceRegions.find(
     (fenceRegion) =>

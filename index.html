@@ -97,7 +97,11 @@
     <div class="container">
       <div class="header">
         <div class="inputWrapper">
-          <input id="searchInput" autocomplete="off" />
+          <input
+            id="searchInput"
+            autocomplete="off"
+            onclick="handleInputClick(event)"
+          />
           <button class="btnClear" onclick="handleClearQuery()">
             <img src="times.svg" />
           </button>
