@@ -18,7 +18,7 @@ const adminData = parseResult.data
       mappedRow[en] = row[he];
     });
 
-    if (!mappedRow['firstName'] && !mappedRow['lastName']) {
+    if (!mappedRow['name']) {
       return null;
     }
 
@@ -27,10 +27,10 @@ const adminData = parseResult.data
   .filter(Boolean);
 
 const userData = adminData.map((item) => ({
-  firstName: item.firstName,
-  lastName: item.lastName,
-  mobile: item.mobile,
-  mainPhone: item.mainPhone,
+  firstName: item.name.split(' ')[0],
+  lastName: item.name.split(' ').slice(1).join(' '),
+  mobile: item.phone,
+  mainPhone: '',
 }));
 
 console.log(adminData.length);

@@ -6,4 +6,5 @@ node_modules
 .env
 
 data.csv
+data-2021.csv
 data_backup.js
