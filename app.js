@@ -332,7 +332,7 @@ function handleQueryChange() {
         decryptedData = JSON.parse(data.toString(CryptoJS.enc.Utf8));
         decryptedData = decryptedData.map((soldier) => ({
           ...soldier,
-          key: `${soldier.firstName} ${soldier.lastName}|${soldier.mobile}|${soldier.id}|${soldier.idfId}`,
+          key: `${soldier.firstName} ${soldier.lastName}|${soldier.mobile}|${soldier.division}|${soldier.id}|${soldier.idfId}`,
         }));
         decryptedDataMap = decryptedData.reduce(
           (p, c) => ({

@@ -12,10 +12,7 @@ const adminData = parseResult.data
   .map((row) => {
     const mappedRow = {};
     keyMapping.forEach(([he, en], index) => {
-      if (index === 0) {
-        mappedRow[en] = row[Object.keys(row)[0]];
-      }
-      mappedRow[en] = row[he];
+      mappedRow[en] = row[en];
     });
 
     if (!mappedRow['name']) {
@@ -30,6 +27,7 @@ const userData = adminData.map((item) => ({
   firstName: item.name.split(' ')[0],
   lastName: item.name.split(' ').slice(1).join(' '),
   mobile: item.phone,
+  division: item.division,
   mainPhone: '',
 }));
 
