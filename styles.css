@@ -68,7 +68,6 @@ a {
   text-decoration: none;
 }
 .soldier .copy {
-  transform: translateY(4px);
   display: inline-block;
   margin-right: 6px;
 }
@@ -217,6 +216,14 @@ a {
   font-weight: bold;
   border-bottom: 1px solid #bbb;
   word-break: break-word;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.value .copy,
+.value .whatsapp {
+  line-height: 0;
 }
 
 .preSigninMain {

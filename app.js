@@ -233,7 +233,9 @@ const renderLine = (column, index, content) => {
   } else if (['mobile', 'mainPhone'].includes(column[1])) {
     return (
       `<div class="label">${prettyPrintLabel(column[0])}</div>` +
-      `<div class="value"><a href="tel:${content}"><b>${content}</b></a> <a class="copy" href="#" onclick="copy(event)"><img src="/copy.svg"/></a></div>`
+      `<div class="value"><a href="tel:${content}"><b>${content}</b></a> <a class="copy" href="#" onclick="copy(event)"><img src="/copy.svg" /></a><a class="whatsapp" style="width:30px" href="https://wa.me/972${content
+        .slice(1)
+        .replaceAll('-', '')}"><img src="/whatsapp.svg"/></a></div>`
     );
   } else if (column[1] === 'email') {
     return (
