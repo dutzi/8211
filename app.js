@@ -251,31 +251,35 @@ const renderLine = (column, index, content) => {
 };
 
 const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
+const favLabels = JSON.parse(localStorage.getItem('favLabels') || '{}');
 
-function isInFavorites(key) {
-  const hashedKey = md5(key);
-
+function isInFavorites(hashedKey) {
   return favorites.indexOf(hashedKey) !== -1;
 }
 
-window.handleToggleFavorite = function (key) {
-  const hashedKey = md5(key);
-
-  if (isInFavorites(key)) {
+window.handleToggleFavorite = function (hashedKey) {
+  if (isInFavorites(hashedKey)) {
     const index = favorites.indexOf(hashedKey);
     favorites.splice(index, 1);
   } else {
-    favorites.push(md5(key));
+    const soldier = decryptedDataMap[hashedKey];
+    const favLabel = prompt('הזן כינוי למועדף');
+
+    favLabels[hashedKey] = favLabel;
+
+    favorites.push(hashedKey);
   }
 
   localStorage.setItem('favorites', JSON.stringify(favorites));
+  localStorage.setItem('favLabels', JSON.stringify(favLabels));
 
   render();
   handleQueryChange();
 };
 
 const renderSoldier = (item, columns) => {
-  const favButtonLabel = isInFavorites(item.key)
+  const hashedKey = md5(item.key);
+  const favButtonLabel = isInFavorites(hashedKey)
     ? '<img class="star" src="/star.svg"/>'
     : '<img class="star" src="/star-empty.svg"/>';
   return `<div class="soldier">
@@ -284,9 +288,7 @@ const renderSoldier = (item, columns) => {
         ${item.firstName + ' ' + item.lastName}
       </div>
       <div class="actions">
-        <button class="favoriteBtn" onClick="handleToggleFavorite('${
-          item.key
-        }')">${favButtonLabel}</button>
+        <button class="favoriteBtn" onClick="handleToggleFavorite('${hashedKey}')">${favButtonLabel}</button>
       </div>
     </div>
     <div class="rows">
@@ -438,10 +440,14 @@ function render() {
       favoritesEl.innerHTML += favorites
         .map((key) => {
           const soldier = decryptedDataMap[key];
+          const favLabel = favLabels[key];
+
           if (!soldier) {
             return '';
           }
-          return `<button class="favItemButton" onClick="handleFavoriteClick('${key}')">${soldier.firstName} ${soldier.lastName}</button>`;
+          return `<button class="favItemButton" onClick="handleFavoriteClick('${key}')">${
+            soldier.firstName
+          } ${soldier.lastName} ${favLabel ? `(${favLabel})` : ''}</button>`;
         })
         .join('');
     } else {
