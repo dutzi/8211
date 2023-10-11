@@ -228,7 +228,7 @@ const renderLine = (column, index, content) => {
     return '';
   }
 
-  if (index === 1 || index === 2) {
+  if (index === 2 || index === 3) {
     return '';
   } else if (['mobile', 'mainPhone'].includes(column[1])) {
     return (
@@ -430,7 +430,7 @@ function render() {
     version.style.opacity = '1';
     searchInput.focus();
   } else if (state === 'search') {
-    searchInput.placeholder = 'הזן קו דיווח/שם חייל/תפקיד';
+    searchInput.placeholder = 'הזן שם חייל/תפקיד';
     searchInput.setAttribute('type', 'text');
     // document.querySelector('.bg').style.opacity = 0;
     document.body.style.backgroundColor = '#fff';

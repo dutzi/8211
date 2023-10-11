@@ -1,6 +1,7 @@
 window.keyMapping = [
   // ['תאריך קליטה', 'joinedDate'],
   ['כוח', 'division'],
+  ['תפקיד', 'title'],
   ['שם פרטי', 'firstName'],
   ['שם משפחה', 'lastName'],
   ['טלפון נייד', 'mobile'],

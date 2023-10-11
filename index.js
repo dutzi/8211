@@ -28,6 +28,7 @@ const userData = adminData.map((item) => ({
   lastName: item.name.split(' ').slice(1).join(' '),
   mobile: item.phone,
   division: item.division,
+  title: item.title,
   mainPhone: '',
 }));
 
