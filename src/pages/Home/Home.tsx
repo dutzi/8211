@@ -34,7 +34,7 @@ function useFavorites() {
     } else {
       const label = prompt('הזן כינוי למועדף (לא חובה)');
       if (label === null) {
-        return;
+        return false;
       }
 
       newItems.push({ key, label });
@@ -42,6 +42,8 @@ function useFavorites() {
 
     setItems(newItems);
     localStorage.setItem('favorites-v2', JSON.stringify(newItems));
+
+    return true;
   }
 
   const itemsMap = useMemo(() => {
@@ -99,7 +101,16 @@ export default function Home({
   }
 
   function handleFav(key: string) {
+    const isFav = !!favorites.itemsMap[key];
     favorites.toggle(key);
+
+    if (!isFav) {
+      setFilter('');
+    }
+
+    if (isFav && filter === soldiersMap[key]?.name) {
+      setFilter('');
+    }
   }
 
   async function handleBioSignUp() {
