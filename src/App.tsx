@@ -4,8 +4,8 @@ import cx from 'classnames';
 import Home from './pages/Home/Home';
 import styles from './App.module.scss';
 import userData from './data/user';
-import decryptData, { Soldier } from './pages/utils/data-utils';
-import { getIsBioSignedUp, bigSignIn } from './pages/utils/biometric-utils';
+import decryptData, { Soldier } from './utils/data-utils';
+import { getIsBioSignedUp, bigSignIn } from './utils/biometric-utils';
 
 function App() {
   const inputRef = useRef<HTMLInputElement>(null);
@@ -70,11 +70,19 @@ function App() {
       </div>
 
       {soldiers ? (
-        <Home soldiers={soldiers} filter={inputValue} setFilter={setInputValue} password={password!} />
+        <Home
+          soldiers={soldiers}
+          filter={inputValue}
+          setFilter={setInputValue}
+          password={password!}
+        />
       ) : (
         <div className={styles.main}>
           {getIsBioSignedUp() && (
-            <button className={styles.bioSignInButton} onClick={handleBioSignIn}>
+            <button
+              className={styles.bioSignInButton}
+              onClick={handleBioSignIn}
+            >
               <FingerprintIcon /> הזדהות ביומטרית
             </button>
           )}

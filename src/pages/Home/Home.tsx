@@ -2,13 +2,18 @@ import { useMemo, useState } from 'react';
 import cx from 'classnames';
 import Highlighter from 'react-highlight-words';
 import styles from './Home.module.scss';
-import { Soldier } from '../utils/data-utils';
+import { Soldier } from '../../utils/data-utils';
 import { ReactComponent as WhatsAppIcon } from '../../svgs/whatsapp.svg';
 import { ReactComponent as StarEmptyIcon } from '../../svgs/star-empty.svg';
 import { ReactComponent as StarFullIcon } from '../../svgs/star-full.svg';
 import { ReactComponent as PhoneIcon } from '../../svgs/phone.svg';
-import { jsonTryParse } from '../utils/utils';
-import { getIsBioSignedUp, bioSignUp, dismissBioSignUp, getIsBioDismissed } from '../utils/biometric-utils';
+import { jsonTryParse } from '../../utils/utils';
+import {
+  getIsBioSignedUp,
+  bioSignUp,
+  dismissBioSignUp,
+  getIsBioDismissed,
+} from '../../utils/biometric-utils';
 
 interface Favorite {
   key: string;
@@ -16,7 +21,9 @@ interface Favorite {
 }
 
 function useFavorites() {
-  const [items, setItems] = useState((jsonTryParse(localStorage.getItem('favorites-v2')) ?? []) as Favorite[]);
+  const [items, setItems] = useState(
+    (jsonTryParse(localStorage.getItem('favorites-v2')) ?? []) as Favorite[]
+  );
 
   function toggle(key: string) {
     const newItems = [...items];
@@ -63,7 +70,9 @@ export default function Home({
   password: string;
 }) {
   const favorites = useFavorites();
-  const [isShowBioSignUpMessage, setIsShowBioSignUpMessage] = useState(!getIsBioSignedUp() && !getIsBioDismissed());
+  const [isShowBioSignUpMessage, setIsShowBioSignUpMessage] = useState(
+    !getIsBioSignedUp() && !getIsBioDismissed()
+  );
 
   const soldiersMap = useMemo(() => {
     return soldiersBase.reduce((prev, curr) => {
@@ -111,11 +120,17 @@ export default function Home({
       {isShowBioSignUpMessage && (
         <div className={styles.bioSignUpMessage}>
           <h3>נמאס לכם להזין סיסמא בכל פעם?</h3>
-          <div>לחצו כאן על מנת להזדהות בעזרת אמצעים ביומטריים (פנים/טביעת אצבע, תלוי בטלפון)</div>
+          <div>
+            לחצו כאן על מנת להזדהות בעזרת אמצעים ביומטריים (פנים/טביעת אצבע,
+            תלוי בטלפון)
+          </div>
           <button className={styles.bioSignUpButton} onClick={handleBioSignUp}>
             הזדהות ביומטרית
           </button>
-          <button className={styles.bioSignUpDismissButton} onClick={handleDismissBioSignUp}>
+          <button
+            className={styles.bioSignUpDismissButton}
+            onClick={handleDismissBioSignUp}
+          >
             הסתר, ואל תציג שוב
           </button>
         </div>
@@ -129,15 +144,28 @@ export default function Home({
               .filter(Boolean)
               .map((soldier) => (
                 <div key={soldier!.key} className={styles.favorite}>
-                  <button className={styles.name} onClick={handleFavClick.bind(null, soldier!.key)}>
+                  <button
+                    className={styles.name}
+                    onClick={handleFavClick.bind(null, soldier!.key)}
+                  >
                     {soldier!.name}
-                    {favorites.itemsMap[soldier!.key]!.label ? ` (${favorites.itemsMap[soldier!.key]!.label})` : ''}
+                    {favorites.itemsMap[soldier!.key]!.label
+                      ? ` (${favorites.itemsMap[soldier!.key]!.label})`
+                      : ''}
                   </button>
                   <div className={styles.actions}>
-                    <a className={styles.action} href={`https://wa.me/972${soldier!.phone.slice(1).replace(/-/g, '')}`}>
+                    <a
+                      className={styles.action}
+                      href={`https://wa.me/972${soldier!.phone
+                        .slice(1)
+                        .replace(/-/g, '')}`}
+                    >
                       <WhatsAppIcon style={{ width: '29px' }} />
                     </a>
-                    <a className={cx(styles.action, styles.whatsapp)} href={`tel:${soldier!.phone}`}>
+                    <a
+                      className={cx(styles.action, styles.whatsapp)}
+                      href={`tel:${soldier!.phone}`}
+                    >
                       <PhoneIcon />
                     </a>
                   </div>
@@ -158,8 +186,15 @@ export default function Home({
                 autoEscape={true}
                 textToHighlight={soldier.name}
               />
-              <button className={styles.favButton} onClick={handleFav.bind(null, soldier.key)}>
-                {favorites.itemsMap[soldier.key] !== undefined ? <StarFullIcon /> : <StarEmptyIcon />}
+              <button
+                className={styles.favButton}
+                onClick={handleFav.bind(null, soldier.key)}
+              >
+                {favorites.itemsMap[soldier.key] !== undefined ? (
+                  <StarFullIcon />
+                ) : (
+                  <StarEmptyIcon />
+                )}
               </button>
             </div>
             <div className={styles.row}>
@@ -177,7 +212,12 @@ export default function Home({
               <a href={`tel:${soldier.phone}`} className={styles.phone}>
                 {soldier.phone}
               </a>
-              <a className={styles.whatsappLink} href={`https://wa.me/972${soldier.phone.slice(1).replace(/-/g, '')}`}>
+              <a
+                className={styles.whatsappLink}
+                href={`https://wa.me/972${soldier.phone
+                  .slice(1)
+                  .replace(/-/g, '')}`}
+              >
                 <WhatsAppIcon />
               </a>
             </div>
