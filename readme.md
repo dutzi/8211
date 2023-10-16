@@ -5,16 +5,23 @@
 Create a file named `.env`, fill it with the app's password:
 
 ```
-PASSWORD=<app password>
+PASSWORD_USER=<app password>
 ```
 
-Export Zahi's Excel as CSV, save it as `data.csv`, then run:
+Create a CSV file named `data.csv`, place it in `src/data/data.csv`, it should look something like this:
+
+```csv
+_,division,name,phone,title
+_,מחלקה 1,ישראל ישראלי,054-1234567,"מ""מ"
+```
+
+Then run:
 
 ```sh
-node index.js
+yarn encrypt-data
 ```
 
-That will create a file named `data.js`, you can now delete the `data.csv` file.
+That will create a file named `data.ts`.
 
 ## Deploy
 

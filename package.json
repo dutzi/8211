@@ -1,19 +1,39 @@
 {
   "name": "8211",
-  "version": "1.0.0",
-  "main": "index.js",
-  "repository": "git@github.com:dutzi/8211.git",
-  "author": "Eldad Bercovici <eldad@deepdub.ai>",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "serve",
-    "build": "echo todo"
+    "dev": "vite",
+    "encrypt-data": "node ./src/data/encrypt-data.js",
+    "build": "tsc && vite build",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "preview": "vite preview"
   },
-  "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {
+  "dependencies": {
+    "aes-js": "^3.1.2",
+    "classnames": "^2.3.2",
     "crypto-js": "^4.1.1",
-    "dotenv": "^16.0.0",
-    "papaparse": "^5.3.1",
-    "serve": "^13.0.2"
+    "dotenv": "^16.3.1",
+    "md5": "^2.3.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-highlight-words": "^0.20.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@types/react-highlight-words": "^0.16.5",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "@vitejs/plugin-react": "^4.0.3",
+    "eslint": "^8.45.0",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-react-refresh": "^0.4.3",
+    "papaparse": "^5.4.1",
+    "sass": "^1.69.3",
+    "typescript": "^5.0.2",
+    "vite": "^4.4.5",
+    "vite-plugin-svgr": "^2.4.0"
   }
 }

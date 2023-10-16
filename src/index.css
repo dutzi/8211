@@ -1,0 +1,10 @@
+body {
+  margin: 0;
+  direction: rtl;
+  font-family: 'Heebo', sans-serif;
+  overscroll-behavior: none;
+}
+
+* {
+  box-sizing: border-box;
+}

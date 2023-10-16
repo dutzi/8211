@@ -1,0 +1,106 @@
+.app {
+  &.loggedOut {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #000000;
+
+    .header {
+      padding: 10px 80px 10px;
+
+      .inputWrapper {
+        .clearButton {
+          opacity: 0;
+        }
+      }
+
+      input {
+        box-shadow: none;
+      }
+    }
+  }
+
+  .header {
+    padding: 20px 20px 30px;
+    background: url('/camo.png');
+    background-size: 100%;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    border-bottom: 1px solid #333;
+    position: sticky;
+    transition: all 0.5s ease-out;
+
+    .inputWrapper {
+      position: relative;
+
+      .clearButton {
+        all: unset;
+        position: absolute;
+        top: 50%;
+        translate: 0 -50%;
+        left: 0;
+        line-height: 0;
+        font-size: 40px;
+        padding: 0.5rem;
+        cursor: pointer;
+        opacity: 1;
+        transition: all 0.5s ease-out;
+      }
+    }
+
+    input {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      width: 100%;
+      background: #fff;
+      flex: 1;
+      font-size: 20px;
+      transition: 0.5s ease-out;
+      outline: none;
+      box-shadow: 0px 0.5px 0.6px hsl(var(--shadow-color) / 0.36),
+        0px 1.5px 1.7px -0.8px hsl(var(--shadow-color) / 0.36), 0px 3.8px 4.3px -1.7px hsl(var(--shadow-color) / 0.36),
+        0.1px 9.4px 10.6px -2.5px hsl(var(--shadow-color) / 0.36);
+    }
+  }
+
+  .main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+
+    align-items: center;
+
+    .bioSignInButton {
+      all: unset;
+      color: white;
+      background-color: #2096f3;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      width: fit-content;
+      padding: 8px 12px;
+      margin-top: 8px;
+      border-radius: 5px;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .unitSymbolWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+
+    img {
+      width: 212px;
+      pointer-events: none;
+    }
+  }
+}
