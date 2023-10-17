@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react';
 import { ReactComponent as FingerprintIcon } from './svgs/fingerprint.svg';
+import { ReactComponent as XMarksIcon } from './svgs/x.svg';
+import { ReactComponent as PlusIcon } from './svgs/plus.svg';
 import cx from 'classnames';
 import Home from './pages/Home/Home';
 import styles from './App.module.scss';
@@ -49,6 +51,25 @@ function App() {
     }
 
     handlePasswordSet(password);
+
+    inputRef.current?.focus();
+  }
+
+  // TODO Implement this.
+  //
+  async function handleAdd() {
+    const name = 'תרצה אתר';
+    const division = 'המחלקה';
+    const phone = '054-1234567';
+
+    const response = await fetch(
+      `/api/add?name=${encodeURIComponent(name)}&division=${encodeURIComponent(division)}&phone=${encodeURIComponent(
+        phone
+      )}`,
+      { method: 'POST' }
+    );
+
+    console.log({ response });
   }
 
   return (
@@ -64,25 +85,20 @@ function App() {
             autoFocus
           />
           <button className={styles.clearButton} onClick={handleClear}>
-            ×
+            <XMarksIcon />
           </button>
         </div>
+        <button className={styles.addButton} onClick={handleAdd}>
+          <PlusIcon />
+        </button>
       </div>
 
       {soldiers ? (
-        <Home
-          soldiers={soldiers}
-          filter={inputValue}
-          setFilter={setInputValue}
-          password={password!}
-        />
+        <Home soldiers={soldiers} filter={inputValue} setFilter={setInputValue} password={password!} />
       ) : (
         <div className={styles.main}>
           {getIsBioSignedUp() && (
-            <button
-              className={styles.bioSignInButton}
-              onClick={handleBioSignIn}
-            >
+            <button className={styles.bioSignInButton} onClick={handleBioSignIn}>
               <FingerprintIcon /> הזדהות ביומטרית
             </button>
           )}

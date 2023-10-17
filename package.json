@@ -11,6 +11,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vercel/blob": "^0.13.0",
     "aes-js": "^3.1.2",
     "classnames": "^2.3.2",
     "crypto-js": "^4.1.1",
