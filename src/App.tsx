@@ -3,7 +3,7 @@ import { ReactComponent as FingerprintIcon } from './svgs/fingerprint.svg';
 import { ReactComponent as XMarksIcon } from './svgs/x.svg';
 import { ReactComponent as PlusIcon } from './svgs/plus.svg';
 import cx from 'classnames';
-import Home from './pages/Home/Home';
+import Home from './components/Home/Home';
 import styles from './App.module.scss';
 import userData from './data/user';
 import decryptData, { Soldier } from './utils/data-utils';

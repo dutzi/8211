@@ -8,12 +8,8 @@ import { ReactComponent as StarEmptyIcon } from '../../svgs/star-empty.svg';
 import { ReactComponent as StarFullIcon } from '../../svgs/star-full.svg';
 import { ReactComponent as PhoneIcon } from '../../svgs/phone.svg';
 import { jsonTryParse } from '../../utils/utils';
-import {
-  getIsBioSignedUp,
-  bioSignUp,
-  dismissBioSignUp,
-  getIsBioDismissed,
-} from '../../utils/biometric-utils';
+import { getIsBioSignedUp, bioSignUp, dismissBioSignUp, getIsBioDismissed } from '../../utils/biometric-utils';
+import AddToFavModal from '../AddToFavModal/AddToFavModal';
 
 interface Favorite {
   key: string;
@@ -21,23 +17,16 @@ interface Favorite {
 }
 
 function useFavorites() {
-  const [items, setItems] = useState(
-    (jsonTryParse(localStorage.getItem('favorites-v2')) ?? []) as Favorite[]
-  );
+  const [items, setItems] = useState((jsonTryParse(localStorage.getItem('favorites-v2')) ?? []) as Favorite[]);
 
-  function toggle(key: string) {
+  function toggle(key: string, label?: string | null) {
     const newItems = [...items];
 
     const index = newItems.findIndex((item) => item.key === key);
     if (index !== -1) {
       newItems.splice(index, 1);
     } else {
-      const label = prompt('הזן כינוי למועדף (לא חובה)');
-      if (label === null) {
-        return false;
-      }
-
-      newItems.push({ key, label });
+      newItems.push({ key, label: label ?? undefined });
     }
 
     setItems(newItems);
@@ -72,9 +61,9 @@ export default function Home({
   password: string;
 }) {
   const favorites = useFavorites();
-  const [isShowBioSignUpMessage, setIsShowBioSignUpMessage] = useState(
-    !getIsBioSignedUp() && !getIsBioDismissed()
-  );
+  const [isShowBioSignUpMessage, setIsShowBioSignUpMessage] = useState(!getIsBioSignedUp() && !getIsBioDismissed());
+  const [isShowAddToFavModal, setIsShowAddToFavModal] = useState(false);
+  const [addToFavModalSoldierKey, setAddToFavModalSoldierKey] = useState<string | null>(null);
 
   const soldiersMap = useMemo(() => {
     return soldiersBase.reduce((prev, curr) => {
@@ -102,14 +91,18 @@ export default function Home({
 
   function handleFav(key: string) {
     const isFav = !!favorites.itemsMap[key];
-    favorites.toggle(key);
 
-    if (!isFav) {
-      setFilter('');
+    if (isFav) {
+      favorites.toggle(key);
+
+      if (filter === soldiersMap[key]?.name) {
+        setFilter('');
+      }
     }
 
-    if (isFav && filter === soldiersMap[key]?.name) {
-      setFilter('');
+    if (!isFav) {
+      setIsShowAddToFavModal(true);
+      setAddToFavModalSoldierKey(key);
     }
   }
 
@@ -126,22 +119,26 @@ export default function Home({
     setIsShowBioSignUpMessage(false);
   }
 
+  function handleAddToFav(label: string | null) {
+    if (!addToFavModalSoldierKey) {
+      return;
+    }
+
+    setFilter('');
+    setIsShowAddToFavModal(false);
+    favorites.toggle(addToFavModalSoldierKey, label);
+  }
+
   return (
     <div className={styles.home}>
       {isShowBioSignUpMessage && (
         <div className={styles.bioSignUpMessage}>
           <h3>נמאס לכם להזין סיסמא בכל פעם?</h3>
-          <div>
-            לחצו כאן על מנת להזדהות בעזרת אמצעים ביומטריים (פנים/טביעת אצבע,
-            תלוי בטלפון)
-          </div>
+          <div>לחצו כאן על מנת להזדהות בעזרת אמצעים ביומטריים (פנים/טביעת אצבע, תלוי בטלפון)</div>
           <button className={styles.bioSignUpButton} onClick={handleBioSignUp}>
             הזדהות ביומטרית
           </button>
-          <button
-            className={styles.bioSignUpDismissButton}
-            onClick={handleDismissBioSignUp}
-          >
+          <button className={styles.bioSignUpDismissButton} onClick={handleDismissBioSignUp}>
             הסתר, ואל תציג שוב
           </button>
         </div>
@@ -155,28 +152,15 @@ export default function Home({
               .filter(Boolean)
               .map((soldier) => (
                 <div key={soldier!.key} className={styles.favorite}>
-                  <button
-                    className={styles.name}
-                    onClick={handleFavClick.bind(null, soldier!.key)}
-                  >
+                  <button className={styles.name} onClick={handleFavClick.bind(null, soldier!.key)}>
                     {soldier!.name}
-                    {favorites.itemsMap[soldier!.key]!.label
-                      ? ` (${favorites.itemsMap[soldier!.key]!.label})`
-                      : ''}
+                    {favorites.itemsMap[soldier!.key]!.label ? ` (${favorites.itemsMap[soldier!.key]!.label})` : ''}
                   </button>
                   <div className={styles.actions}>
-                    <a
-                      className={styles.action}
-                      href={`https://wa.me/972${soldier!.phone
-                        .slice(1)
-                        .replace(/-/g, '')}`}
-                    >
+                    <a className={styles.action} href={`https://wa.me/972${soldier!.phone.slice(1).replace(/-/g, '')}`}>
                       <WhatsAppIcon style={{ width: '29px' }} />
                     </a>
-                    <a
-                      className={cx(styles.action, styles.whatsapp)}
-                      href={`tel:${soldier!.phone}`}
-                    >
+                    <a className={cx(styles.action, styles.whatsapp)} href={`tel:${soldier!.phone}`}>
                       <PhoneIcon />
                     </a>
                   </div>
@@ -197,15 +181,8 @@ export default function Home({
                 autoEscape={true}
                 textToHighlight={soldier.name}
               />
-              <button
-                className={styles.favButton}
-                onClick={handleFav.bind(null, soldier.key)}
-              >
-                {favorites.itemsMap[soldier.key] !== undefined ? (
-                  <StarFullIcon />
-                ) : (
-                  <StarEmptyIcon />
-                )}
+              <button className={styles.favButton} onClick={handleFav.bind(null, soldier.key)}>
+                {favorites.itemsMap[soldier.key] !== undefined ? <StarFullIcon /> : <StarEmptyIcon />}
               </button>
             </div>
             <div className={styles.row}>
@@ -223,12 +200,7 @@ export default function Home({
               <a href={`tel:${soldier.phone}`} className={styles.phone}>
                 {soldier.phone}
               </a>
-              <a
-                className={styles.whatsappLink}
-                href={`https://wa.me/972${soldier.phone
-                  .slice(1)
-                  .replace(/-/g, '')}`}
-              >
+              <a className={styles.whatsappLink} href={`https://wa.me/972${soldier.phone.slice(1).replace(/-/g, '')}`}>
                 <WhatsAppIcon />
               </a>
             </div>
@@ -236,6 +208,8 @@ export default function Home({
           </div>
         ))}
       </div>
+
+      {isShowAddToFavModal && <AddToFavModal onSubmit={handleAddToFav} onClose={() => setIsShowAddToFavModal(false)} />}
     </div>
   );
 }

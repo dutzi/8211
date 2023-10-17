@@ -1,0 +1,127 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+}
+
+.modal {
+  position: fixed;
+  z-index: 1;
+  top: 100px;
+  left: 50%;
+  translate: -50% 0;
+
+  background-color: white;
+  max-width: 90vw;
+  width: 300px;
+  border: 2px solid #111;
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    font-weight: bold;
+
+    .closeButton {
+      all: unset;
+      position: absolute;
+      left: 0;
+      line-height: 0;
+      padding: 4px;
+      padding-left: 6px;
+    }
+  }
+
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 10px 10px 2px;
+
+    label {
+      font-size: 16px;
+      display: block;
+    }
+
+    input {
+      border: 1px solid #000;
+      width: 100%;
+      font-size: 20px;
+      padding: 4px;
+      outline: none;
+      z-index: 1;
+
+      &:focus-visible {
+        outline: 2px solid var(--primary-color);
+      }
+    }
+
+    .gutter {
+      display: flex;
+      flex-direction: column;
+      margin-top: 4px;
+
+      .addButton {
+        all: unset;
+        text-align: center;
+        background-color: var(--primary-color);
+        color: white;
+        box-shadow: 0 3px var(--primary-color-muted);
+      }
+
+      .cancelButton {
+        all: unset;
+        text-align: center;
+        font-size: 16px;
+        color: #666;
+        padding: 4px;
+      }
+    }
+  }
+
+  .labelHistory {
+    padding: 4px;
+    font-size: 16px;
+    border: 1px solid #999;
+    border-top: none;
+    background: #eee;
+    box-shadow: 0px 5px 2px -2px inset #888;
+    margin: -6px 3px 0;
+    overflow: auto;
+    max-height: 300px;
+
+    .title {
+      color: #888;
+      font-size: 12px;
+    }
+
+    .entry {
+      display: flex;
+      margin: 0 -2px;
+      padding: 0 2px;
+
+      &:active {
+        background-color: var(--primary-color);
+        color: white;
+      }
+
+      .labelButton {
+        all: unset;
+        flex: 1;
+      }
+
+      .deleteButton {
+        all: unset;
+        padding: 4px;
+        line-height: 0;
+
+        svg {
+          width: 12px;
+          height: 12px;
+        }
+      }
+    }
+  }
+}
